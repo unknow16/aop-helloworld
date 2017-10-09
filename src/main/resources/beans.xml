@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
+
+	<!-- 目标类 -->
+	<bean id="helloWorldService" class="com.fuyi.helloworld.service.HelloWorldServiceImpl"></bean>
+	
+	<!-- 切面 -->
+	<bean id="aspect" class="com.fuyi.helloworld.aop.HelloWorldAspect"></bean>
+
+	<bean id="beforeAdvice" class="com.fuyi.helloworld.aop.BeforeAdviceImpl"></bean>
+	<!-- 配置aop -->
+	<aop:config>
+	
+		<!-- 声明切入点，即将通知应用在目标类的哪个方法上 -->
+		<aop:pointcut expression="execution(* com.fuyi..*.*(..))" id="pointcut"/>
+		
+		<!-- <aop:aspect ref="aspect"> -->
+			<!-- <aop:before method="beforeAdvice" pointcut-ref="pointcut"/> -->
+			<!-- <aop:after method="afterFinallyAdvice" pointcut="execution(* com.fuyi..*.*(..))"/> -->			
+			
+			
+			<!-- 
+			1）切入点匹配：在配置中使用“execution(* cn.javass..*.sayBefore(..)) ”匹配目标方法sayBefore，
+				且使用“args(param)”匹配目标方法只有一个参数且传入的参数类型为通知实现方法中同名的参数类型；
+			2）目标(通知)方法定义：使用method=" beforeAdvice(java.lang.String) "指定前置通知实现方法，
+				且该通知有一个参数类型为java.lang.String参数；
+			3）目标方法参数命名：其中使用arg-names=" param "指定通知实现方法参数名为“param”，
+			 -->
+<!-- 			<aop:before 
+				pointcut="execution(* com.fuyi..*.sayBefore(..)) and args(param111)"
+				method="beforeAdvice(java.lang.String)" 
+				arg-names="param111"/> -->
+				
+				
+			<!-- 
+			1）切入点匹配：在配置中使用“execution(* cn.javass..*.sayAfterReturning(..)) ”匹配目标方法sayAfterReturning，该方法返回true；
+			2）目标方法定义：使用method="afterReturningAdvice"指定后置返回通知实现方法；
+			3）目标方法参数命名：其中使用arg-names="retVal"指定通知实现方法参数名为“retVal”；
+			4）返回值命名：returning="retVal"用于将目标返回值赋值给通知实现方法参数名为“retVal”的参数上。
+			 -->
+<!-- 			<aop:after-returning 
+				pointcut="execution(* com.fuyi..*.sayAfterReturning(..))"
+				method="afterReturningAdvice"
+				arg-names="retVal"
+				returning="retVal"
+				/> -->
+				
+				
+			<!-- 
+			1）切入点匹配：在配置中使用“execution(* cn.javass..*.sayAfterThrowing(..))”匹配目标方法sayAfterThrowing，该方法将抛出RuntimeException异常；
+			2）目标方法定义：使用method="afterThrowingAdvice"指定后置异常通知实现方法；
+			3）目标方法参数命名：其中使用arg-names="exception"指定通知实现方法参数名为“exception”；
+			4）异常命名：returning="exception"用于将目标方法抛出的异常赋值给通知实现方法参数名为“exception”的参数上。
+			 -->
+<!-- 			<aop:after-throwing 
+				pointcut="execution(* com.fuyi..*.sayAfterThrowing(..))"
+				method="afterThrowingAdvice"
+				arg-names="exception"
+				throwing="exception"
+				/>	 -->
+				
+			<!-- 
+			1）切入点匹配：在配置中使用“execution(* cn.javass..*.sayAfterFinally(..))”匹配目标方法sayAfterFinally，该方法将抛出RuntimeException异常；
+			2）目标方法定义：使用method=" afterFinallyAdvice "指定后置最终通知实现方法。
+			 -->
+<!-- 			<aop:after 
+				pointcut="execution(* com.fuyi..*.sayAfterFinally(..))"
+				method="afterFinallyAdvice"
+				/> -->
+				
+			<!-- 
+			1）切入点匹配：在配置中使用“execution(* cn.javass..*.sayAround(..))”匹配目标方法sayAround；
+			2）目标方法定义：使用method="aroundAdvice"指定环绕通知实现方法，在该实现中，第一个方法参数为pjp，类型为ProceedingJoinPoint，其中“Object retVal = pjp.proceed(new Object[] {"replace"});”，用于执行目标方法，且目标方法参数被“new Object[] {"replace"}”替换，最后返回“retVal ”返回值。
+			3）测试：我们使用“helloworldService.sayAround("haha");”传入参数为“haha”，但最终输出为“replace”，说明参数被替换了。
+			 -->	
+<!-- 			<aop:around 
+				pointcut="execution(* com.fuyi..*.sayAround(..))"
+				method="aroundAdvice"
+				/> -->
+				
+<!-- 			<aop:declare-parents 
+				types-matching="com.fuyi..*.HelloWorldService+" 
+				implement-interface="com.fuyi.helloworld.service.IntroductionService"
+				default-impl="com.fuyi.helloworld.service.IntroductionServiceImpl"/>
+ -->			
+		<!-- </aop:aspect> -->
+		
+		<aop:advisor 
+			pointcut="execution(* com.fuyi..*.sayAdvisorBefore(..))" 
+			advice-ref="beforeAdvice"/>
+	</aop:config>
+</beans>
